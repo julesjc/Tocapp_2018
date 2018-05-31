@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.List;
+
 public class FriendsActivity extends AppCompatActivity {
 
     ListView friendsList;
@@ -31,10 +33,15 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
+        ServerFacade.getFriends(this);
+    }
+
+    public void fillList(List l)
+    {
         friendsList = (ListView) findViewById(R.id.friendsList);
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(FriendsActivity.this,
-                android.R.layout.simple_list_item_1, ServerFacade.getFriends());
+                android.R.layout.simple_list_item_1, l);
         friendsList.setAdapter(adapter);
     }
 

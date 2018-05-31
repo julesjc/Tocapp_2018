@@ -44,18 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                 !mail.getText().toString().isEmpty() && !name.getText().toString().isEmpty()
                 && !password.getText().toString().isEmpty() && !password2.getText().toString().isEmpty()) {
 
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference mailRef = database.getReference(name.getText().toString()).child("mail");
-
-            mailRef.setValue(mail.getText().toString());
-
-            DatabaseReference nameRef = database.getReference(name.getText().toString()).child("name");
-
-            nameRef.setValue(name.getText().toString());
-
-            DatabaseReference pswRef = database.getReference(name.getText().toString()).child("password");
-
-            pswRef.setValue(password.getText().toString());
+            ServerFacade.registerUser(name.getText().toString(),mail.getText().toString(),password.getText().toString());
 
             finish();
         }

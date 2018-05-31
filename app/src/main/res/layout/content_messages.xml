@@ -8,7 +8,7 @@
     tools:context=".MessagesActivity"
     tools:showIn="@layout/activity_messages">
 
-    <ListView android:id="@+id/friendsList"
+    <ListView android:id="@+id/messageslist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
