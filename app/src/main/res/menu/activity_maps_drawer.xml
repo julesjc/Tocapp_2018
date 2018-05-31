@@ -1,0 +1,39 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_profil"
+            android:icon="@android:drawable/ic_menu_view"
+            android:checked="true"
+            android:title="Profil"/>
+        <item
+            android:id="@+id/nav_amis"
+            android:icon="@android:drawable/ic_menu_compass"
+            android:title="Amis"/>
+        <item
+            android:id="@+id/nav_messages"
+            android:icon="@android:drawable/ic_dialog_email"
+            android:title="Messages"/>
+        <item
+            android:id="@+id/nav_events"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Evenements"/>
+    </group>
+
+    <item
+        android:title="Sous menu">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@android:drawable/ic_menu_preferences"
+                android:title="Preferences"/>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@android:drawable/ic_menu_info_details"
+                android:title="A propos"/>
+        </menu>
+    </item>
+
+</menu>
