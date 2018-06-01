@@ -84,6 +84,26 @@ public class ServerFacade {
         });
     }
 
+    public static void sendFriendRequest(String user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference Reqs = database.getReference(user).child("friendRequests");
+        Reqs.setValue(user);
+    }
+
+    public static void requestToFriend(String user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference Reqs = database.getReference(name).child("friendRequests");
+        Reqs.child(user).removeValue();
+        Reqs = database.getReference(name).child("Friends");
+        Reqs.setValue(user);
+        Reqs = database.getReference(user).child("Friends");
+        Reqs.setValue(user);
+    }
+
+
+
     public static void registerUser(String name, String mail, String psw)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
