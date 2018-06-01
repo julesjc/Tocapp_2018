@@ -44,9 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                 !mail.getText().toString().isEmpty() && !name.getText().toString().isEmpty()
                 && !password.getText().toString().isEmpty() && !password2.getText().toString().isEmpty()) {
 
-            ServerFacade.registerUser(name.getText().toString(),mail.getText().toString(),password.getText().toString());
-
-            finish();
+            ServerFacade.registerUser(name.getText().toString(),mail.getText().toString(),password.getText().toString(), this);
         }
 
         else
@@ -54,6 +52,22 @@ public class RegisterActivity extends AppCompatActivity {
             Snackbar.make(v, "Erreur saisie", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
+
+    }
+
+    void showModal(boolean success)
+    {
+        String message;
+
+        if (success) {
+            message = "Vous êtes inscrit(e)";
+            finish();
+        }
+        else
+            message = "Ce nom est déjà pris";
+
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
 
     }
 

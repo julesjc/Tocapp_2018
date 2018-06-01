@@ -20,14 +20,6 @@ public class ServerFacade {
     static String name;
     static String psw;
 
-    public static void setPsw(String psw) {
-        ServerFacade.psw = psw;
-    }
-
-    public static void setName(String name) {
-        ServerFacade.name = name;
-    }
-
     public static void getFriends(final FriendsActivity act)
     {
 
@@ -84,6 +76,35 @@ public class ServerFacade {
         });
     }
 
+    public static void getDescription(final ProfileActivity act)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(name).child("description");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                String desc = dataSnapshot.getValue(String.class);
+                act.fillDescription(desc);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    public static void setDescription(String newDescription )
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(name).child("description");
+        myRef.setValue(newDescription);
+    }
+
     public static void sendFriendRequest(String user)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -104,22 +125,34 @@ public class ServerFacade {
 
 
 
-    public static void registerUser(String name, String mail, String psw)
+    public static void registerUser(final String name,final String mail,final String psw,final RegisterActivity act)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userInDB = database.getReference(name);
+        final DatabaseReference userInDB = database.getReference(name);
+        userInDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        DatabaseReference mailRef = userInDB.child("mail");
-
-        mailRef.setValue(mail);
-
-        DatabaseReference nameRef = userInDB.child("name");
-
-        nameRef.setValue(name);
-
-        DatabaseReference pswRef = userInDB.child("password");
-
-        pswRef.setValue(psw);
+                if (!dataSnapshot.exists()) {
+                    DatabaseReference mailRef = userInDB.child("mail");
+                    mailRef.setValue(mail);
+                    DatabaseReference nameRef = userInDB.child("name");
+                    nameRef.setValue(name);
+                    DatabaseReference pswRef = userInDB.child("password");
+                    pswRef.setValue(psw);
+                    act.showModal(true);
+                }
+                else
+                {
+                    act.showModal(false);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 
     public static void connectUser(final String typedName, final String typedPsw, final MainActivity act)
