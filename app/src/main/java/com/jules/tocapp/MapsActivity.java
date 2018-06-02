@@ -31,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -87,7 +88,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .getBestProvider(criteria, false));
 
             LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(pos).title("Moi"));
+            Marker me = mMap.addMarker(new MarkerOptions().position(pos).title(ServerFacade.name + " (Moi)"));
+            me.showInfoWindow();
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title("Moi")

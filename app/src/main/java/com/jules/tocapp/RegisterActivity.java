@@ -57,19 +57,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     void showModal(boolean success)
     {
-        String message;
 
         if (success) {
-            message = "Vous êtes inscrit(e)";
             finish();
         }
         else
-            message = "Ce nom est déjà pris";
+            Snackbar.make(findViewById(android.R.id.content), "Ce nom est déjà pris", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
 
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
 
     }
-
 
 }
