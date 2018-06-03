@@ -3,7 +3,6 @@ package com.jules.tocapp;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +14,7 @@ import android.widget.ListView;
 
 import java.util.List;
 
-public class FriendsActivity extends AppCompatActivity {
+public class FriendsListActivity extends AppCompatActivity {
 
     ListView friendsList;
 
@@ -71,7 +70,7 @@ public class FriendsActivity extends AppCompatActivity {
     {
         friendsList = (ListView) findViewById(R.id.friendsList);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(FriendsActivity.this,
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(FriendsListActivity.this,
                 android.R.layout.simple_list_item_1, l);
         friendsList.setAdapter(adapter);
     }

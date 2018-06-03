@@ -19,7 +19,7 @@ public class ServerFacade {
     static String user;
     static String psw;
 
-    public static void getFriends(final FriendsActivity act)
+    public static void getFriends(final FriendsListActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -47,7 +47,7 @@ public class ServerFacade {
         });
     }
 
-    public static void getMessages(final String conversationWith, final ConversationsActivity act)
+    public static void getMessages(final String conversationWith, final ConversationsListActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -75,7 +75,7 @@ public class ServerFacade {
         });
     }
 
-    public static void getConversations(final ConversationsActivity act)
+    public static void getConversations(final ConversationsListActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -85,14 +85,14 @@ public class ServerFacade {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                List<String> messages = new ArrayList();
-                DataSnapshot messageSnapshot = dataSnapshot.child("Conversations");
-                Iterable<DataSnapshot> friendsChildren = messageSnapshot.getChildren();
-                for (DataSnapshot conversation : friendsChildren) {
-                    String s = conversation.getValue(String.class);
-                    messages.add(s);
+                List<Conversation> conversations = new ArrayList();
+                DataSnapshot conversationSnapshot = dataSnapshot.child("Conversations");
+                Iterable<DataSnapshot> conversationsChildren = conversationSnapshot.getChildren();
+                for (DataSnapshot conversation : conversationsChildren) {
+                    Conversation s = conversation.getValue(Conversation.class);
+                    conversations.add(s);
                 }
-                act.fillList(messages);
+                act.fillList(conversations);
             }
 
             @Override
@@ -217,14 +217,58 @@ public class ServerFacade {
 
     }
 
-    public void sendMessage(String to, String text)
+    public static void sendMessage(final String to, String text)
     {
-        Message messageReceiver = new Message(to,text);
-        Message messageSender = new Message(user,text);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference sender = database.getReference(to).child("Conversations").child(user);
-        DatabaseReference receiver = database.getReference(user).child("Conversations").child(to);
-        sender.setValue(messageSender);
-        receiver.setValue(messageReceiver);
+        final Message message = new Message(user,text);
+        final Conversation convSender = new Conversation(to,message);
+        final Conversation convReceiver = new Conversation(user,message);
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference sender = database.getReference(user).child("Conversations");
+        final DatabaseReference receiver = database.getReference(to);
+        sender.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<Conversation> conversations = new ArrayList();
+                Iterable<DataSnapshot> conversationsChildren = dataSnapshot.getChildren();
+                for (DataSnapshot conversation : conversationsChildren) {
+                    Conversation s = conversation.getValue(Conversation.class);
+                    conversations.add(s);
+                }
+                conversations.add(convSender);
+                sender.setValue(conversations);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        receiver.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+                    List<Conversation> conversations = new ArrayList();
+                    DataSnapshot conversationSnapshot = dataSnapshot.child("Conversations");
+                    Iterable<DataSnapshot> conversationsChildren = conversationSnapshot.getChildren();
+                    for (DataSnapshot conversation : conversationsChildren) {
+                        Conversation s = conversation.getValue(Conversation.class);
+                        conversations.add(s);
+                    }
+                    conversations.add(convReceiver);
+                    receiver.setValue(conversations);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 }

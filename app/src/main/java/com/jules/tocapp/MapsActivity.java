@@ -147,11 +147,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(profileActivity);
                 break;
             case R.id.nav_amis:
-                Intent friendsActivity = new Intent(this, FriendsActivity.class);
+                Intent friendsActivity = new Intent(this, FriendsListActivity.class);
                 startActivity(friendsActivity);
                 break;
             case R.id.nav_messages:
-                Intent messagesActivity = new Intent(this, ConversationsActivity.class);
+                Intent messagesActivity = new Intent(this, ConversationsListActivity.class);
                 startActivity(messagesActivity);
                 break;
             case R.id.nav_events:
