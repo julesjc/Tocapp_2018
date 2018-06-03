@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import java.util.List;
 
-public class MessagesActivity extends AppCompatActivity {
+public class ConversationsActivity extends AppCompatActivity {
 
     ListView messagesList;
 
@@ -32,14 +32,14 @@ public class MessagesActivity extends AppCompatActivity {
             }
         });
 
-        ServerFacade.getMessages(this);
+        ServerFacade.getConversations(this);
     }
 
     public void fillList(List l)
     {
         messagesList = (ListView) findViewById(R.id.messageslist);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(MessagesActivity.this,
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConversationsActivity.this,
                 android.R.layout.simple_list_item_1, l);
         messagesList.setAdapter(adapter);
     }

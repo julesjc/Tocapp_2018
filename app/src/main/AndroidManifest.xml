@@ -51,7 +51,7 @@
             android:label="@string/title_activity_friends"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MessagesActivity"
+            android:name=".ConversationsActivity"
             android:label="@string/title_activity_messages"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

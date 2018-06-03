@@ -5,6 +5,10 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class Util {
 
@@ -17,6 +21,11 @@ public class Util {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static Date getCurrentTime()
+    {
+        return Calendar.getInstance().getTime();
     }
 
 }

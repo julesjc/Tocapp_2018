@@ -1,18 +1,18 @@
 package com.jules.tocapp;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Message {
 
     String from;
     String text;
-    boolean isReaded;
+    Date time;
+    boolean isRead;
 
-    public Message(String from, String text, boolean isReaded) {
+    public Message(String from, String text) {
         this.from = from;
         this.text = text;
-        this.isReaded = isReaded;
+        this.time = Util.getCurrentTime();
     }
 
     public String getFrom() {
@@ -23,11 +23,13 @@ public class Message {
         return text;
     }
 
-    public boolean isReaded() {
-        return isReaded;
+    public boolean isRead() {
+        return isRead;
     }
-    public void setReaded(boolean readed) {
-        isReaded = readed;
+    public void setRead(boolean read) {
+        isRead = read;
     }
+
+
 
 }

@@ -1,6 +1,5 @@
 package com.jules.tocapp;
 
-import android.app.Activity;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -17,14 +16,14 @@ import static android.content.ContentValues.TAG;
 public class ServerFacade {
 
 
-    static String name;
+    static String user;
     static String psw;
 
     public static void getFriends(final FriendsActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(name);
+        DatabaseReference myRef = database.getReference(user);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -48,18 +47,18 @@ public class ServerFacade {
         });
     }
 
-    public static void getMessages(final MessagesActivity act)
+    public static void getMessages(final String conversationWith, final ConversationsActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(name);
+        DatabaseReference myRef = database.getReference(user);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 List<String> messages = new ArrayList();
-                DataSnapshot messageSnapshot = dataSnapshot.child("messages");
+                DataSnapshot messageSnapshot = dataSnapshot.child("Conversations").child(conversationWith);
                 Iterable<DataSnapshot> friendsChildren = messageSnapshot.getChildren();
                 for (DataSnapshot message : friendsChildren) {
                     String s = message.getValue(String.class);
@@ -76,10 +75,38 @@ public class ServerFacade {
         });
     }
 
+    public static void getConversations(final ConversationsActivity act)
+    {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<String> messages = new ArrayList();
+                DataSnapshot messageSnapshot = dataSnapshot.child("Conversations");
+                Iterable<DataSnapshot> friendsChildren = messageSnapshot.getChildren();
+                for (DataSnapshot conversation : friendsChildren) {
+                    String s = conversation.getValue(String.class);
+                    messages.add(s);
+                }
+                act.fillList(messages);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
     public static void getDescription(final ProfileActivity act)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(name).child("description");
+        DatabaseReference myRef = database.getReference(user).child("description");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -101,7 +128,7 @@ public class ServerFacade {
     public static void setDescription(String newDescription )
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(name).child("description");
+        DatabaseReference myRef = database.getReference(user).child("description");
         myRef.setValue(newDescription);
     }
 
@@ -115,9 +142,9 @@ public class ServerFacade {
     public static void requestToFriend(String user)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference Reqs = database.getReference(name).child("friendRequests");
+        DatabaseReference Reqs = database.getReference(ServerFacade.user).child("friendRequests");
         Reqs.child(user).removeValue();
-        Reqs = database.getReference(name).child("Friends");
+        Reqs = database.getReference(ServerFacade.user).child("Friends");
         Reqs.setValue(user);
         Reqs = database.getReference(user).child("Friends");
         Reqs.setValue(user);
@@ -136,7 +163,7 @@ public class ServerFacade {
                 if (!dataSnapshot.exists()) {
                     DatabaseReference mailRef = userInDB.child("mail");
                     mailRef.setValue(mail);
-                    DatabaseReference nameRef = userInDB.child("name");
+                    DatabaseReference nameRef = userInDB.child("user");
                     nameRef.setValue(name);
                     DatabaseReference pswRef = userInDB.child("password");
                     pswRef.setValue(psw);
@@ -169,7 +196,7 @@ public class ServerFacade {
                     String realpsw = dataSnapshot.child("password").getValue(String.class);
                     if (typedPsw.equals(realpsw))
                     {
-                        ServerFacade.name = typedName;
+                        ServerFacade.user = typedName;
                         ServerFacade.psw = typedPsw;
                         act.loginSuccessful();
                     }
@@ -188,5 +215,16 @@ public class ServerFacade {
             }
         });
 
+    }
+
+    public void sendMessage(String to, String text)
+    {
+        Message messageReceiver = new Message(to,text);
+        Message messageSender = new Message(user,text);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference sender = database.getReference(to).child("Conversations").child(user);
+        DatabaseReference receiver = database.getReference(user).child("Conversations").child(to);
+        sender.setValue(messageSender);
+        receiver.setValue(messageReceiver);
     }
 }
