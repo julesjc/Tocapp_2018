@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         inputName = findViewById(R.id.inputName);
         inputPsw = findViewById(R.id.inputPsw);
 
-        //A ENLEVER
+        //pour debug A ENLEVER
         inputName.setText("Jules");
         inputPsw.setText("1234");
 

@@ -7,8 +7,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -75,24 +76,27 @@ public class ServerFacade {
         });
     }
 
-    public static void getConversations(final ConversationsListActivity act)
+    public static void getConversationsUsers(final ConversationsListActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(user);
+        final DatabaseReference myRef = database.getReference(user).child("Conversations");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                List<Conversation> conversations = new ArrayList();
-                DataSnapshot conversationSnapshot = dataSnapshot.child("Conversations");
-                Iterable<DataSnapshot> conversationsChildren = conversationSnapshot.getChildren();
+                HashMap<String,Conversation> conversations = new HashMap<>();
+                Iterable<DataSnapshot> conversationsChildren = dataSnapshot.getChildren();
                 for (DataSnapshot conversation : conversationsChildren) {
                     Conversation s = conversation.getValue(Conversation.class);
-                    conversations.add(s);
+                    conversations.put(s.getWith(),s);
                 }
-                act.fillList(conversations);
+                List<String> conversationsUsers = new ArrayList<>();
+                for ( String key : conversations.keySet() ) {
+                    conversationsUsers.add(key);
+                }
+                act.fillList(conversationsUsers);
             }
 
             @Override
@@ -230,13 +234,16 @@ public class ServerFacade {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                List<Conversation> conversations = new ArrayList();
+                HashMap<String,Conversation> conversations = new HashMap<>();
                 Iterable<DataSnapshot> conversationsChildren = dataSnapshot.getChildren();
                 for (DataSnapshot conversation : conversationsChildren) {
                     Conversation s = conversation.getValue(Conversation.class);
-                    conversations.add(s);
+                    conversations.put(s.getWith(),s);
                 }
-                conversations.add(convSender);
+                if (!conversations.containsKey(convSender.getWith()))
+                    conversations.put(convSender.getWith(),convSender);
+                else
+                    conversations.get(convSender.getWith()).addMessageToList(message);
                 sender.setValue(conversations);
 
             }
@@ -252,14 +259,17 @@ public class ServerFacade {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
-                    List<Conversation> conversations = new ArrayList();
                     DataSnapshot conversationSnapshot = dataSnapshot.child("Conversations");
+                    HashMap<String,Conversation> conversations = new HashMap<>();
                     Iterable<DataSnapshot> conversationsChildren = conversationSnapshot.getChildren();
                     for (DataSnapshot conversation : conversationsChildren) {
                         Conversation s = conversation.getValue(Conversation.class);
-                        conversations.add(s);
+                        conversations.put(s.getWith(),s);
                     }
-                    conversations.add(convReceiver);
+                    if (!conversations.containsKey(convReceiver.getWith()))
+                        conversations.put(convReceiver.getWith(),convReceiver);
+                    else
+                        conversations.get(convReceiver.getWith()).addMessageToList(message);
                     receiver.setValue(conversations);
                 }
             }
