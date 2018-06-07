@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "755775772434-7bqusktnq5l4s1me48mvuquddgqk6tte.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jules.tocapp",
+            "certificate_hash": "23204fe57a2b3d9ad6949015b0191bd2e3e923f1"
+          }
+        },
+        {
           "client_id": "755775772434-r5c64bcu5vlkrnv5qai7cvgfoj5qff24.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
