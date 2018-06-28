@@ -7,7 +7,9 @@ public class Message {
     String from;
     String text;
     Date time;
-    boolean isRead;
+    boolean read;
+
+    public Message(){};
 
     public Message(String from, String text) {
         this.from = from;
@@ -19,15 +21,32 @@ public class Message {
         return from;
     }
 
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+
     public String getText() {
         return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
     public boolean isRead() {
-        return isRead;
+        return read;
     }
     public void setRead(boolean read) {
-        isRead = read;
+        this.read = read;
     }
 
 
