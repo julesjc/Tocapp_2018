@@ -35,6 +35,7 @@ import java.util.Random;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener,View.OnClickListener {
 
     private GoogleMap mMap;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +75,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // TODO : FAIRE FENETRE PERMISSION
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
+            locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
-            LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-
-            Location location = locationManager.getLastKnownLocation(locationManager
-                    .getBestProvider(criteria, false));
+            Location location = getLastKnownLocation();
 
             LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
             Marker me = mMap.addMarker(new MarkerOptions().position(pos).title(ServerFacade.user + " (Moi)"));
@@ -96,6 +94,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private Location getLastKnownLocation() {
+        locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = locationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            Location l = locationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
+    }
+
     public void refresh(GoogleMap googleMap)
     {
         if (ContextCompat.checkSelfPermission(this,
@@ -103,8 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Criteria criteria = new Criteria();
             LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
-            Location location = locationManager.getLastKnownLocation(locationManager
-                    .getBestProvider(criteria, false));
+            Location location = getLastKnownLocation();
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15.0f));
         }

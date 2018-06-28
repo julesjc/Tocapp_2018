@@ -87,7 +87,7 @@ public class ServerFacade {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 HashMap<String,Conversation> conversations = new HashMap<>();
-                Iterable<DataSnapshot> conversationsChildren = dataSnapshot.getChildren();
+                    Iterable<DataSnapshot> conversationsChildren = dataSnapshot.getChildren();
                 for (DataSnapshot conversation : conversationsChildren) {
                     Conversation s = conversation.getValue(Conversation.class);
                     conversations.put(s.getWith(),s);
