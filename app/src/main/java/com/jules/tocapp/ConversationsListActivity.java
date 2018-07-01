@@ -1,5 +1,6 @@
 package com.jules.tocapp;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ConversationsListActivity extends AppCompatActivity {
 
     ListView conversationsList;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class ConversationsListActivity extends AppCompatActivity {
 
         ServerFacade.getConversationsUsers(this);
     }
+
     public void OpenMessages(String with)
     {
         Intent intent = new Intent(this, WriteMessageActivity.class);
@@ -56,7 +59,7 @@ public class ConversationsListActivity extends AppCompatActivity {
     }
     public void fillList(List l)
     {
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConversationsListActivity.this,
+        adapter = new ArrayAdapter<String>(ConversationsListActivity.this,
                 android.R.layout.simple_list_item_1, l);
         conversationsList.setAdapter(adapter);
     }
@@ -75,6 +78,7 @@ public class ConversationsListActivity extends AppCompatActivity {
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         receiver.setInputType(InputType.TYPE_CLASS_TEXT);
         final EditText messageText = new EditText(this);
+        final ConversationsListActivity act = this;
         messageText.setHint("Message");
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         messageText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -87,6 +91,7 @@ public class ConversationsListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ServerFacade.sendMessage(receiver.getText().toString(),messageText.getText().toString());
+
             }
         });
         builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {

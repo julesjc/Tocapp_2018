@@ -49,16 +49,16 @@ public class WriteMessageActivity extends AppCompatActivity {
     public void SendAndAddToList(View v)
     {
         String text = messagetext.getText().toString();
-        listItems.add(text);
-        adapter.notifyDataSetChanged();
-        ServerFacade.sendMessage(with,text);
+        if (!text.isEmpty()) {
+            adapter.add(/*ServerFacade.user + " :\n" +*/text);
+            ServerFacade.sendMessage(with, text);
+        }
     }
 
     public void fillList(List l) {
-        
+
         adapter = new ArrayAdapter<String>(WriteMessageActivity.this,
                 android.R.layout.simple_list_item_1, l);
         messagesList.setAdapter(adapter);
-
     }
 }

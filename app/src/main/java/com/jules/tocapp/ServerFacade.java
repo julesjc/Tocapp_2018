@@ -26,7 +26,7 @@ public class ServerFacade {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(user);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -54,7 +54,7 @@ public class ServerFacade {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(user);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -82,7 +82,7 @@ public class ServerFacade {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference(user).child("Conversations");
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -112,7 +112,7 @@ public class ServerFacade {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(user).child("description");
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -160,7 +160,7 @@ public class ServerFacade {
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference userInDB = database.getReference(name);
-        userInDB.addValueEventListener(new ValueEventListener() {
+        userInDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -191,7 +191,7 @@ public class ServerFacade {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(typedName);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -254,7 +254,7 @@ public class ServerFacade {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        receiver.addValueEventListener(new ValueEventListener() {
+        receiver.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -270,7 +270,7 @@ public class ServerFacade {
                         conversations.put(convReceiver.getWith(),convReceiver);
                     else
                         conversations.get(convReceiver.getWith()).addMessageToList(message);
-                    receiver.setValue(conversations);
+                    receiver.child("Conversations").setValue(conversations);
                 }
             }
 
