@@ -1,6 +1,7 @@
 package com.jules.tocapp;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class ConversationsListActivity extends AppCompatActivity {
 
-    ListView messagesList;
+    ListView conversationsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +36,29 @@ public class ConversationsListActivity extends AppCompatActivity {
                 newMessageModal();
             }
         });
+        conversationsList = (ListView) findViewById(R.id.messageslist);
+
+        conversationsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                OpenMessages(conversationsList.getItemAtPosition(position).toString());
+            }
+        });
 
         ServerFacade.getConversationsUsers(this);
     }
-
+    public void OpenMessages(String with)
+    {
+        Intent intent = new Intent(this, WriteMessageActivity.class);
+        intent.putExtra("user", with);
+        startActivity(intent);
+    }
     public void fillList(List l)
     {
-        messagesList = (ListView) findViewById(R.id.messageslist);
-
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConversationsListActivity.this,
                 android.R.layout.simple_list_item_1, l);
-        messagesList.setAdapter(adapter);
+        conversationsList.setAdapter(adapter);
     }
 
     public void newMessageModal()

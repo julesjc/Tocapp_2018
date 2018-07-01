@@ -48,7 +48,7 @@ public class ServerFacade {
         });
     }
 
-    public static void getMessages(final String conversationWith, final ConversationsListActivity act)
+    public static void getMessages(final String conversationWith, final WriteMessageActivity act)
     {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -59,11 +59,11 @@ public class ServerFacade {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 List<String> messages = new ArrayList();
-                DataSnapshot messageSnapshot = dataSnapshot.child("Conversations").child(conversationWith);
+                DataSnapshot messageSnapshot = dataSnapshot.child("Conversations").child(conversationWith).child("messages");
                 Iterable<DataSnapshot> friendsChildren = messageSnapshot.getChildren();
                 for (DataSnapshot message : friendsChildren) {
-                    String s = message.getValue(String.class);
-                    messages.add(s);
+                    Message m = message.getValue(Message.class);
+                    messages.add(m.text);
                 }
                 act.fillList(messages);
             }
@@ -230,7 +230,7 @@ public class ServerFacade {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference sender = database.getReference(user).child("Conversations");
         final DatabaseReference receiver = database.getReference(to);
-        sender.addValueEventListener(new ValueEventListener() {
+        sender.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
