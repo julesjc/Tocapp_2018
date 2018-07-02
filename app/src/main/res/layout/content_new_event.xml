@@ -88,4 +88,5 @@
         android:text="Invités :"
         tools:layout_editor_absoluteX="97dp"
         tools:layout_editor_absoluteY="302dp" />
+
 </RelativeLayout>
