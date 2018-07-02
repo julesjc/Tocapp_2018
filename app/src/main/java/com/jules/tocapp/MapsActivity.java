@@ -168,7 +168,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(messagesActivity);
                 break;
             case R.id.nav_events:
-                //showFragment(new GalleryFragment());
+                Intent eventsActivity = new Intent(this, EventListActivity.class);
+                startActivity(eventsActivity);
                 break;
             case R.id.nav_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);

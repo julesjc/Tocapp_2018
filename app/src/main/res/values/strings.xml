@@ -81,5 +81,8 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_write_message">WriteMessageActivity</string>
+    <string name="title_activity_new_event">NewEventActivity</string>
+    <string name="title_activity_event_list">EventListActivity</string>
+    <string name="title_activity_event">EventActivity</string>
 
 </resources>

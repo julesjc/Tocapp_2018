@@ -61,7 +61,19 @@
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".WriteMessageActivity"></activity>
+        <activity android:name=".WriteMessageActivity" />
+        <activity
+            android:name=".NewEventActivity"
+            android:label="@string/title_activity_new_event"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventListActivity"
+            android:label="@string/title_activity_event_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventActivity"
+            android:label="@string/title_activity_event"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

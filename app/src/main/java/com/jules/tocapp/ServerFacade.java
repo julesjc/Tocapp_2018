@@ -48,6 +48,62 @@ public class ServerFacade {
         });
     }
 
+    public static void eventFriendExists(final String name, final NewEventActivity act)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> friends = new ArrayList();
+                DataSnapshot friendsSnapshot = dataSnapshot.child("friends");
+                Iterable<DataSnapshot> friendsChildren = friendsSnapshot.getChildren();
+                for (DataSnapshot friend : friendsChildren) {
+                    String s = friend.getValue(String.class);
+                    if (s.equals(name))
+                    {
+                        act.friendExists(name);
+                        return;
+                    }
+                }
+                act.friendnotExists();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    public static void getEvent(String name,final EventActivity act)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                DataSnapshot eventsSnapshot = dataSnapshot.child("events");
+                Iterable<DataSnapshot> eventsChildren = eventsSnapshot.getChildren();
+                for (DataSnapshot event : eventsChildren) {
+                    Event e = event.getValue(Event.class);
+                    act.fill(e);
+                }
+                //act.fill(e);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
     public static void getMessages(final String conversationWith, final WriteMessageActivity act)
     {
 
@@ -107,6 +163,34 @@ public class ServerFacade {
         });
     }
 
+    public static void getEventsName(final EventListActivity act)
+    {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<String> eventList = new ArrayList();
+                DataSnapshot eventsSnapshot = dataSnapshot.child("events");
+                Iterable<DataSnapshot> eventsChildren = eventsSnapshot.getChildren();
+                for (DataSnapshot event : eventsChildren) {
+                    Event e = event.getValue(Event.class);
+                    eventList.add(e.getName());
+                }
+                act.fillList(eventList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
     public static void getDescription(final ProfileActivity act)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -127,6 +211,43 @@ public class ServerFacade {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+    }
+
+    public static void submitEvent(final Event event, final NewEventActivity act)
+    {
+        for (String userInvited:event.getInvited()) {
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            final DatabaseReference userfirebase = database.getReference(ServerFacade.user).child("events");
+            userfirebase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    List<Event> events = new ArrayList<>();
+                    Iterable<DataSnapshot> eventsChildren = dataSnapshot.getChildren();
+                    for (DataSnapshot conversation : eventsChildren) {
+                        Event e = conversation.getValue(Event.class);
+                        events.add(e);
+                        if (e.getName().equals(event.getName()))
+                        {
+                            act.eventExists();
+                            return;
+                        }
+                    }
+                    events.add(event);
+                    userfirebase.setValue(events);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
+
+        }
+        act.success();
     }
 
     public static void setDescription(String newDescription )
