@@ -29,7 +29,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener,View.OnClickListener {
@@ -85,11 +87,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .position(pos)
                     .title("Moi")
                     .snippet("Je suis la")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15.0f));
 
-            addUsers(mMap, pos);
+            ServerFacade.getEventsMarkers(this);
+            ServerFacade.setLastKnownLocation(pos);
+            //ServerFacade.getFriendsMarkers(this);
+            //addUsers(mMap, pos);
+        }
+    }
+
+    public void placeEventsMarkers(List<Event> events)
+    {
+        for (Event e:events
+             ) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(e.getLatitude(),e.getLongitude()))
+                    .title(e.name)
+                    .snippet(e.description)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        }
+    }
+
+    public void placeFriendsMarkers(HashMap<String,LatLng> fpos)
+    {
+        for(Map.Entry<String, LatLng> entry : fpos.entrySet()) {
+            String key = entry.getKey();
+            LatLng value = entry.getValue();
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(value.latitude,value.longitude))
+                    .title(key)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
         }
     }
 

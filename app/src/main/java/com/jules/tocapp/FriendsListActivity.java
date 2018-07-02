@@ -53,7 +53,7 @@ public class FriendsListActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ServerFacade.sendFriendRequest(input.getText().toString());
+                ServerFacade.addFriend(input.getText().toString());
             }
         });
         builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {

@@ -52,6 +52,7 @@ public class WriteMessageActivity extends AppCompatActivity {
         if (!text.isEmpty()) {
             adapter.add(/*ServerFacade.user + " :\n" +*/text);
             ServerFacade.sendMessage(with, text);
+            messagetext.setText("");
         }
     }
 

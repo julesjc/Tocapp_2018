@@ -25,7 +25,7 @@
 
     <EditText
         android:id="@+id/eventdesc"
-        android:layout_width="wrap_content"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -71,7 +71,7 @@
 
     <TextView
         android:id="@+id/location"
-        android:layout_width="191dp"
+        android:layout_width="321dp"
         android:layout_height="54dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
@@ -82,7 +82,7 @@
 
     <TextView
         android:id="@+id/invited"
-        android:layout_width="191dp"
+        android:layout_width="322dp"
         android:layout_height="54dp"
         android:layout_centerInParent="true"
         android:text="Invités :"

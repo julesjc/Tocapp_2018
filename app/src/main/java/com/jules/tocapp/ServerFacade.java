@@ -2,6 +2,7 @@ package com.jules.tocapp;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,7 +79,7 @@ public class ServerFacade {
         });
     }
 
-    public static void getEvent(String name,final EventActivity act)
+    public static void getEvent(final String name, final EventActivity act)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(user);
@@ -89,11 +90,12 @@ public class ServerFacade {
 
                 DataSnapshot eventsSnapshot = dataSnapshot.child("events");
                 Iterable<DataSnapshot> eventsChildren = eventsSnapshot.getChildren();
+                HashMap<String,Event> events = new HashMap<>();
                 for (DataSnapshot event : eventsChildren) {
                     Event e = event.getValue(Event.class);
-                    act.fill(e);
+                    events.put(e.getName(),e);
                 }
-                //act.fill(e);
+                act.fill(events.get(name));
             }
 
             @Override
@@ -250,13 +252,84 @@ public class ServerFacade {
         act.success();
     }
 
+    public static void setLastKnownLocation(LatLng pos)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user).child("latitude");
+        myRef.setValue(pos.latitude);
+        myRef = database.getReference(user).child("longitude");
+        myRef.setValue(pos.longitude);
+    }
+
+    /*public static void getFriendsMarkers(final MapsActivity act) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user).child("friends");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final HashMap<String,LatLng> fposList = new HashMap<>();
+                Iterable<DataSnapshot> friendsChildren = dataSnapshot.getChildren();
+                for (DataSnapshot friend : friendsChildren) {
+                    final String f = friend.getValue(String.class);
+                    DatabaseReference myRef = database.getReference(f);
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            fposList.put(f,new LatLng(dataSnapshot.child("latitude").getValue(Double.class),dataSnapshot.child("longitude").getValue(Double.class)));
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            // Failed to read value
+                            Log.w(TAG, "Failed to read value.", error.toException());
+                        }
+                        });
+                }
+                act.placeFriendsMarkers(fposList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }*/
+
+    public static void getEventsMarkers(final MapsActivity act)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(user);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<Event> eventList = new ArrayList();
+                DataSnapshot eventsSnapshot = dataSnapshot.child("events");
+                Iterable<DataSnapshot> eventsChildren = eventsSnapshot.getChildren();
+                for (DataSnapshot event : eventsChildren) {
+                    Event e = event.getValue(Event.class);
+                    eventList.add(e);
+                }
+                act.placeEventsMarkers(eventList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
     public static void setDescription(String newDescription )
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(user).child("description");
         myRef.setValue(newDescription);
     }
-
+    //todo friends requests
     public static void sendFriendRequest(String user)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -273,6 +346,54 @@ public class ServerFacade {
         Reqs.setValue(user);
         Reqs = database.getReference(user).child("Friends");
         Reqs.setValue(user);
+    }
+    //demo only
+    public static void addFriend(final String name)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference userInDB = database.getReference(user);
+        final DatabaseReference friendInDB = database.getReference(name);
+        friendInDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+                    List<String> friends = new ArrayList<>();
+                    Iterable<DataSnapshot> friendsChildren = dataSnapshot.child("friends").getChildren();
+                    for (DataSnapshot friend : friendsChildren) {
+                        String f = friend.getValue(String.class);
+                        friends.add(f);
+                    }
+                    friends.add(name);
+                    friendInDB.child("friends").setValue(friends);
+                    userInDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            List<String> friends = new ArrayList<>();
+                            Iterable<DataSnapshot> friendsChildren = dataSnapshot.child("friends").getChildren();
+                            for (DataSnapshot friend : friendsChildren) {
+                                String f = friend.getValue(String.class);
+                                friends.add(f);
+                            }
+                            friends.add(user);
+                            userInDB.child("friends").setValue(friends);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            // Failed to read value
+                            Log.w(TAG, "Failed to read value.", error.toException());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
     }
 
 
