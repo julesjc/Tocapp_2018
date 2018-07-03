@@ -364,7 +364,7 @@ public class ServerFacade {
                         String f = friend.getValue(String.class);
                         friends.add(f);
                     }
-                    friends.add(name);
+                    friends.add(user);
                     friendInDB.child("friends").setValue(friends);
                     userInDB.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -375,7 +375,7 @@ public class ServerFacade {
                                 String f = friend.getValue(String.class);
                                 friends.add(f);
                             }
-                            friends.add(user);
+                            friends.add(name);
                             userInDB.child("friends").setValue(friends);
                         }
                         @Override
