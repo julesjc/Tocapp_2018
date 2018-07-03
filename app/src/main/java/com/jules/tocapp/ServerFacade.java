@@ -121,7 +121,7 @@ public class ServerFacade {
                 Iterable<DataSnapshot> friendsChildren = messageSnapshot.getChildren();
                 for (DataSnapshot message : friendsChildren) {
                     Message m = message.getValue(Message.class);
-                    messages.add(m.text);
+                    messages.add(m.from + " : " + m.text);
                 }
                 act.fillList(messages);
             }
@@ -220,7 +220,7 @@ public class ServerFacade {
         for (String userInvited:event.getInvited()) {
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference userfirebase = database.getReference(ServerFacade.user).child("events");
+            final DatabaseReference userfirebase = database.getReference(userInvited).child("events");
             userfirebase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

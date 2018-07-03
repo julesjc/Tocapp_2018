@@ -94,7 +94,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ServerFacade.getEventsMarkers(this);
             ServerFacade.setLastKnownLocation(pos);
             //ServerFacade.getFriendsMarkers(this);
-            //addUsers(mMap, pos);
+            addUsers(mMap, pos);
         }
     }
 
@@ -156,17 +156,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void addUsers(GoogleMap mMap, LatLng userPos)
     {
         float rad = 75;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             Random rdm = new Random();
             LatLng piPos = new LatLng(userPos.latitude - (rdm.nextFloat()-0.5f)/rad, userPos.longitude + (rdm.nextFloat()-0.5f)/rad);
             List<String> list = new ArrayList<String>();
-            list.add("Odin");
+            list.add("Mickael");
             list.add("Isaac");
-            list.add("Arnaud");
-            list.add("Jean-Hugues");
-            list.add("Junior");
-            list.add("Christopher");
-            mMap.addMarker(new MarkerOptions().position(piPos).title(list.get(rdm.nextInt(list.size()))));
+            list.add("Julien");
+            mMap.addMarker(new MarkerOptions().position(piPos).title(list.get(i)));
         }
     }
     @Override
