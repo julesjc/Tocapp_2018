@@ -163,7 +163,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             list.add("Mickael");
             list.add("Isaac");
             list.add("Julien");
-            mMap.addMarker(new MarkerOptions().position(piPos).title(list.get(i)));
+            mMap.addMarker(new MarkerOptions().position(piPos).title(list.get(i))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
         }
     }
     @Override
